@@ -1,0 +1,69 @@
+{
+  "name": "ramduck-redux",
+  "version": "0.0.1",
+  "description": "A duck toolbox for redux based on ramda :-*",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "unpkg": "dist/ramduck-redux.min.js",
+  "jsdelivr": "dist/ramduck-redux.min.js",
+  "scripts": {
+    "test": "jest",
+    "build:cjs": "babel src --out-dir cjs --ignore \"**/*.spec.js\"",
+    "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir esm --ignore \"**/*.spec.js\"",
+    "build:dist": "cross-env BABEL_ENV=umd babel src/index.js --out-file dist/ramduck-redux.js",
+    "build:dist:min": "cross-env BABEL_ENV=umd babel src/index.js --out-file dist/ramduck-redux.min.js --minified",
+    "build": "npm run build:cjs && npm run build:esm && npm run build:dist && npm run build:dist:min"
+  },
+  "keywords": [
+    "ramda",
+    "redux",
+    "utilities",
+    "functional",
+    "fp",
+    "reducer",
+    "action"
+  ],
+  "author": "KNP Labs <hello@knplabs.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "cross-env": "^5.2.0",
+    "jest": "^23.6.0",
+    "regenerator-runtime": "^0.12.1"
+  },
+  "dependencies": {
+    "ramda": "^0.25.0",
+    "redux": "^4.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "env": {
+      "esm": {
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "modules": false
+            }
+          ]
+        ]
+      },
+      "umd": {
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "modules": "umd"
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

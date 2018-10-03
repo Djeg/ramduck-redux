@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+DS-Store
+/esm/**/*
+!/esm/.gitkeep
+/cjs/**/*
+!/cjs/.gitkeep
+/dist/**/*
+!/dist/.gitkeep
+
