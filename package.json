@@ -6,13 +6,19 @@
   "module": "esm/index.js",
   "unpkg": "dist/ramduck-redux.min.js",
   "jsdelivr": "dist/ramduck-redux.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Djeg/ramduck-redux.git"
+  },
   "scripts": {
     "test": "jest",
     "build:cjs": "babel src --out-dir cjs --ignore \"**/*.spec.js\"",
     "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir esm --ignore \"**/*.spec.js\"",
     "build:dist": "cross-env BABEL_ENV=umd babel src/index.js --out-file dist/ramduck-redux.js",
     "build:dist:min": "cross-env BABEL_ENV=umd babel src/index.js --out-file dist/ramduck-redux.min.js --minified",
-    "build": "npm run build:cjs && npm run build:esm && npm run build:dist && npm run build:dist:min"
+    "build": "npm run build:cjs && npm run build:esm && npm run build:dist && npm run build:dist:min",
+    "clean": "rimraf cjs/* esm/* dist/* && npm run build",
+    "prepare": "npm run clean && npm run build"
   },
   "keywords": [
     "ramda",
@@ -33,7 +39,8 @@
     "babel-jest": "^23.6.0",
     "cross-env": "^5.2.0",
     "jest": "^23.6.0",
-    "regenerator-runtime": "^0.12.1"
+    "regenerator-runtime": "^0.12.1",
+    "rimraf": "^2.6.2"
   },
   "dependencies": {
     "ramda": "^0.25.0"
