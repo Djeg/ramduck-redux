@@ -1,10 +1,10 @@
 Ramduck Redux
 =============
 
-Tired of creating reducers that arn't curried. Interested in partial application with
-ramda ?
+Tired of creating reducers that aren't curried. Interested in partial application with
+Ramdajs ?
 
-This little project brings the power of currie and composition (thanks to Ramda) into
+This little project brings the power of curry and composition (thanks to Ramda) into
 your redux project.
 
 #### Previously
@@ -179,4 +179,22 @@ const reducer = combine(
   when('SOME_OTHER_TYPE', someOtherTypeReducer),
   when(['A', 'B'], somePluralActionReducer),
 )
+```
+
+## API Reference
+
+```
+ action :: String a => a -> () -> EmptyAction a
+ actionN :: Number a, String b, Object c => a -> b -> (...n -> c) -> ...n -> Action(b, c)
+ action1 :: String a, Object b => a -> b -> (* -> c) -> * -> Action(a, c)
+ action2 :: String a, Object b => a -> b -> (* -> * -> c) -> * -> * -> Action(a, c)
+ action3 :: String a, Object b => a -> b -> (* -> * -> * -> c) -> * -> * -> * -> Action(a, c)
+ action4 :: String a, Object b => a -> b -> (* -> * -> * -> * -> c) -> * -> * -> * -> * -> Action(a, c)
+ mergeAction :: Object a, Object b => Action(*, a) -> b -> { a, b }
+
+ init :: a -> (a, Action(*, *)) -> a
+ whenAction :: String -> (Action(*, *) -> a -> b) -> (a, Action(*, *)) -> b
+ whenActions :: [String] -> (Action(*, *) -> a -> b) -> (a, Action(*, *)) -> b
+ when :: String|[String] -> (Action(*, *) -> a -> b) -> (a, Action(*, *)) -> b
+ combine :: ...(a -> Action(*, *) -> b) -> a -> Action(*, *) -> c
 ```
