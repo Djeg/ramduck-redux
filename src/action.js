@@ -1,4 +1,13 @@
-import { always, objOf, curryN, merge, uncurryN } from 'ramda'
+import {
+  always,
+  compose,
+  curryN,
+  flip,
+  merge,
+  objOf,
+  omit,
+  uncurryN,
+} from 'ramda'
 
 /**
  * @type EmptyAction :: String a -> { type :: a }
@@ -53,3 +62,10 @@ export const action3 = actionN(3)
  * Create an action of four arguments
  */
 export const action4 = actionN(4)
+
+/**
+ * mergeAction :: Object a, Object b => Action(*, a) -> b -> { a, b }
+ *
+ * merge an action with a given object by omitting it's `type` property !
+ */
+export const mergeAction = uncurryN(2, compose(flip(merge), omit(['type'])))

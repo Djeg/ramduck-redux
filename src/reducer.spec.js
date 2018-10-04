@@ -25,7 +25,7 @@ it('can reduce an action', () => {
 });
 
 it('can create reducers on top of action reduce', () => {
-  const reduceChangeName = when('changeName', action => evolve({
+  const reduceChangeName = when(['changeName', 'change_name'], action => evolve({
     name: always(action.name),
   }));
 
@@ -39,8 +39,10 @@ it('can create reducers on top of action reduce', () => {
   const state1 = app(initialState, { type: 'changeName', name: 'John' });
   const state2 = app(state1, { type: 'changeName', name: 'Eric' });
   const state3 = app(state2, { type: 'unkown' });
+  const state4 = app(state3, { type: 'change_name', name: 'Michelle' });
 
   expect(state1).toEqual({ name: 'John' });
   expect(state2).toEqual({ name: 'Eric' });
   expect(state3).toEqual(state2);
+  expect(state4).toEqual({ name: 'Michelle' });
 });

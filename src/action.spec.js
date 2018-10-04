@@ -1,4 +1,4 @@
-import { action, actionN, action1, action2, action3, action4 } from './action'
+import { action, actionN, action1, action2, action3, action4, mergeAction } from './action'
 import { objOf, pipe, merge } from 'ramda'
 
 it('can create action of no argument', () => {
@@ -22,6 +22,18 @@ it('can create actions of n arguments', () => {
     name: 'John',
     age: 30,
   })
+});
+
+it('can create curried actions creator', () => {
+  const changeUser = actionN(2, 'changeUser', name => email => ({ name, email }));
+  const changeJohnMail = changeUser('John');
+  const action = changeJohnMail('john@doe.com');
+
+  expect(action).toEqual({
+    type: 'changeUser',
+    name: 'John',
+    email: 'john@doe.com'
+  });
 });
 
 it('can create an action of one argument', () => {
@@ -73,4 +85,15 @@ it('can create action of four arguments', () => {
     email: 'jane@mail.com',
     password: '1234',
   });
+});
+
+it('can merge an action payload (without it\'s type) with any object', () => {
+  const changeName = action1('changeName', objOf('name'))
+  const state = { name: 'John' };
+  const action = changeName('Jane')
+  const newState = mergeAction(action, state);
+
+  expect(newState).toEqual({
+    name: 'Jane',
+  })
 });
