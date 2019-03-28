@@ -15,5 +15,6 @@ it('contains reducers functions', () => {
   expect(ramduck.when).toBeDefined();
   expect(ramduck.whenActions).toBeDefined();
   expect(ramduck.whenAction).toBeDefined();
-  expect(ramduck.combine).toBeDefined();
+  expect(ramduck.createReducer).toBeDefined();
+  expect(ramduck.createRootReducer).toBeDefined();
 });

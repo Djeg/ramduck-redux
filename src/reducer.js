@@ -39,7 +39,7 @@ export const init = uncurryN(2, initialState =>
 export const whenAction = uncurryN(2, type => pipe(
   uncurryN(2),
   fn => uncurryN(2, state => ifElse(
-    propEq('type', type),
+    propEq('type', `${type}`),
     action => fn(action, state),
     always(state),
   )),
@@ -50,13 +50,16 @@ export const whenAction = uncurryN(2, type => pipe(
  *
  * Reduce a given action type
  */
-export const whenActions = uncurryN(2, types => pipe(
-  uncurryN(2),
-  fn => uncurryN(2, state => ifElse(
-    compose(contains(__, types), prop('type')),
-    action => fn(action, state),
-    always(state),
-  )),
+export const whenActions = uncurryN(2, pipe(
+  map(type => `${type}`),
+  types => pipe(
+    uncurryN(2),
+    fn => uncurryN(2, state => ifElse(
+      compose(contains(__, types), prop('type')),
+      action => fn(action, state),
+      always(state),
+    )),
+  )
 ))
 
 /**

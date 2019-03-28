@@ -1,4 +1,4 @@
-import { combine, combineReducers, init, when } from './reducer'
+import { createReducer, createRootReducer, init, when } from './reducer'
 import { evolve, always, pipe, uncurryN } from 'ramda'
 
 it('can create reducer with an initial state', () => {
@@ -31,10 +31,12 @@ it('can create reducers on top of action reduce', () => {
 
   const initialState = { name: 'Jane' }
 
-  const app = combineReducers([
+  const app = createReducer('user', [
     init(initialState),
     reduceChangeName,
   ]);
+
+  const root = createRootReducer([ app ])
 
   const state1 = app(initialState, { type: 'changeName', name: 'John' });
   const state2 = app(state1, { type: 'changeName', name: 'Eric' });
@@ -45,4 +47,10 @@ it('can create reducers on top of action reduce', () => {
   expect(state2).toEqual({ name: 'Eric' });
   expect(state3).toEqual(state2);
   expect(state4).toEqual({ name: 'Michelle' });
+
+  expect(`${app}`).toEqual('user');
+
+  const rootState = root({}, { type: 'changeName', name: 'John' })
+
+  expect(rootState).toEqual({ user: { name: 'John' } })
 });

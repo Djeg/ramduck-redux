@@ -55,7 +55,7 @@ export default function (state = INITIAL_STATE, action) {
 
 ```js
 // reducer/user.js
-import { action1, action2, combine, init, when, mergeAction } from 'ramduck-redux'
+import { action1, action2, createReducer, init, when, mergeAction } from 'ramduck-redux'
 import { objOf, always, evolve, o, merge } from 'ramda'
 
 export const initialState = {
@@ -75,7 +75,7 @@ export const changeUser = action2('change user', name => email => ({ name, email
 // `${changeName}` === 'change user name'
 
 // Reducer:
-export default combine(
+export default createReducer('user', [ // you must name it (handy with ramduck-react-redux)
   init(initialState),
 
   when(changeName, ({ name }) => state => ({
@@ -98,7 +98,21 @@ export default combine(
   // or with mergeAction (same behavior, it merge the action payload by removing
   // the type properties):
   // when(changeUser, mergeAction),
-)
+])
+
+
+// In your main state file: reducer/index.js
+
+import User from './user'
+import { createRootReducer } from 'ramduck-redux'
+
+// you can combine
+// your reducers easily with:
+const rootReducer = createRootReducer([ User ])
+
+// your state will take the reducer name declare above and put it into a global
+// state object of the shape:
+// { user: <the user state> }
 ```
 
 ## Installation
@@ -145,6 +159,10 @@ changeUser('John', 'john@mail.com') // { type: 'CHANGE_USER', name: 'John', emai
 // action creators are curried:
 const changeJohnEmail = changeUser('John'); // [Function]
 const action = changeJohnEmail('john@doe.com'); // { type: 'CHANGE_USER', name: 'John', email: 'john@mail.com' }
+
+// no need of action types. You can access to the type be converting your
+// action creator to string
+`${changeUser}` === 'CHANGE_USER' // true
 ```
 
 ### Reducer
@@ -152,7 +170,7 @@ const action = changeJohnEmail('john@doe.com'); // { type: 'CHANGE_USER', name: 
 You can create reducers much more easily with `combine, init, when`:
 
 ```js
-import { combine, init, when } from 'ramduck-redux'
+import { createReducer, createRootReducer, init, when } from 'ramduck-redux'
 
 const simpleReducer = init({ name: 'John' });
 
@@ -171,29 +189,53 @@ changeNameReducer({}, { type: 'changeName', name: 'john' }); // { name: 'john' }
 
 // you can easily combine those methods to create much more complex
 // reducers:
-const reducer = combine(
+const reducer = createReducer('myReducerName', [
   init(myInitialState),
 
   when('SOME_TYPE', someTypeReducer),
   when('SOME_OTHER_TYPE', someOtherTypeReducer),
   when(['A', 'B'], somePluralActionReducer),
-)
+])
 ```
 
 ## API Reference
 
-```
- action :: String a => a -> () -> EmptyAction a
- actionN :: Number a, String b, Object c => a -> b -> (...n -> c) -> ...n -> Action(b, c)
- action1 :: String a, Object b => a -> b -> (* -> c) -> * -> Action(a, c)
- action2 :: String a, Object b => a -> b -> (* -> * -> c) -> * -> * -> Action(a, c)
- action3 :: String a, Object b => a -> b -> (* -> * -> * -> c) -> * -> * -> * -> Action(a, c)
- action4 :: String a, Object b => a -> b -> (* -> * -> * -> * -> c) -> * -> * -> * -> * -> Action(a, c)
- mergeAction :: Object a, Object b => Action(*, a) -> b -> { a, b }
+```purescript
+data EmptyAction ::
+  { type :: String
+  }
 
- init :: a -> (a, Action(*, *)) -> a
- whenAction :: String -> (Action(*, *) -> a -> b) -> (a, Action(*, *)) -> b
- whenActions :: [String] -> (Action(*, *) -> a -> b) -> (a, Action(*, *)) -> b
- when :: String|[String] -> (Action(*, *) -> a -> b) -> (a, Action(*, *)) -> b
- combine :: ...(a -> Action(*, *) -> b) -> a -> Action(*, *) -> c
+data Action a ::
+  { type :: String
+  | a
+  }
+
+--| Actions helpers
+action :: String -> () -> EmptyAction
+
+actionN :: Number -> String -> (* -> a) -> * -> Action a
+
+action1 :: String -> (a -> b) -> a -> Action b
+
+action2 :: String -> (a -> b -> c) -> a -> b -> Action c
+
+action3 :: String -> (a -> b -> c -> d) -> a -> b -> c -> Action d
+
+action4 :: String -> (a -> b -> c -> d -> e) -> a -> b -> c -> d -> Action e
+
+mergeAction :: Action a -> Object b -> Action { | a | b }
+
+
+--| Reducers helpers
+init :: a -> (Action b, a) -> a
+
+whenAction :: String -> (Action a -> b -> b) -> (b, Action a) -> b
+
+whenActions :: [String] -> (Action a -> b -> b) -> (b, Action a) -> b
+
+when :: String|[String] -> (Action a -> b -> b) -> (b, Action a) -> b
+
+createReducer :: String -> [((b -> Action a) -> b)] -> b -> Action a -> b
+
+createRootReducer :: [((b -> Action a) -> b)] -> b -> Action a -> b
 ```
