@@ -211,6 +211,7 @@ data Action a ::
   }
 
 --| Actions helpers
+
 action :: String -> () -> EmptyAction
 
 actionN :: Number -> String -> (* -> a) -> * -> Action a
@@ -227,6 +228,7 @@ mergeAction :: Action a -> Object b -> Action { | a | b }
 
 
 --| Reducers helpers
+
 init :: a -> (Action b, a) -> a
 
 whenAction :: String -> (Action a -> b -> b) -> (b, Action a) -> b
