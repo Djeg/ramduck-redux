@@ -58,39 +58,38 @@ export default function (state = INITIAL_STATE, action) {
 import { action1, action2, combine, init, when, mergeAction } from 'ramduck-redux'
 import { objOf, always, evolve, o, merge } from 'ramda'
 
-export const INITIAL_STATE = {
+export const initialState = {
   name: '',
   email: '',
 };
 
-// Actions types
-export const CHANGE_NAME = 'change user name';
-export const CHANGE_EMAIL = 'change user email';
-export const CHANGE_USER = 'change user';
-
 // Actions creator
-export const changeName = action1(CHANGE_NAME, name => { name });
+export const changeName = action1('change user name', name => { name });
 // with obj of
-export const changeEmail = action1(CHANGE_EMAIL, objOf('email'));
+export const changeEmail = action1('change user email', objOf('email'));
 // with 2 arguments
-export const changeUser = action2(CHANGE_USER, name => email => ({ name, email }))
+export const changeUser = action2('change user', name => email => ({ name, email }))
+
+// no need of action type, use your function as a string in order
+// to retrieve the type:
+// `${changeName}` === 'change user name'
 
 // Reducer:
 export default combine(
-  init(INITIAL_STATE),
+  init(initialState),
 
-  when(CHANGE_NAME, ({ name }) => state => ({
+  when(changeName, ({ name }) => state => ({
     ...state,
     name,
   })),
 
   // with evolve:
-  when(CHANGE_EMAIL, ({ email }) => evolve({
+  when(changeEmail, ({ email }) => evolve({
     email: always(email),
   })),
 
   // with omit, merge and composition:
-  when(CHANGE_USER, ({ name, email }) => state => ({
+  when(changeUser, ({ name, email }) => state => ({
       ..state,
       name,
       email,
@@ -98,7 +97,7 @@ export default combine(
 
   // or with mergeAction (same behavior, it merge the action payload by removing
   // the type properties):
-  // when(CHANGE_USER, mergeAction),
+  // when(changeUser, mergeAction),
 )
 ```
 

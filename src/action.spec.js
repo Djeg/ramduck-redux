@@ -5,6 +5,7 @@ it('can create action of no argument', () => {
   const a = action('test');
 
   expect(a()).toEqual({ type: 'test' });
+  expect(`${a}`).toEqual('test')
 });
 
 it('can create actions of n arguments', () => {
@@ -22,6 +23,9 @@ it('can create actions of n arguments', () => {
     name: 'John',
     age: 30,
   })
+
+  expect(`${a}`).toEqual('test')
+  expect(`${b}`).toEqual('test2')
 });
 
 it('can create curried actions creator', () => {
@@ -34,12 +38,16 @@ it('can create curried actions creator', () => {
     name: 'John',
     email: 'john@doe.com'
   });
+
+  expect(`${changeUser}`).toEqual('changeUser')
 });
 
 it('can create an action of one argument', () => {
   const test = action1('test', objOf('name'));
 
   expect(test('John Doe')).toEqual({ type: 'test', name: 'John Doe' });
+
+  expect(`${test}`).toEqual('test')
 });
 
 it('can create an action of two arguments', () => {
@@ -53,6 +61,8 @@ it('can create an action of two arguments', () => {
     name: 'Jane Doe',
     age: 24,
   })
+
+  expect(`${changePerson}`).toEqual('test')
 });
 
 it('can create an action of three arguments', () => {
@@ -68,6 +78,8 @@ it('can create an action of three arguments', () => {
     age: 24,
     email: 'jane@doe.com',
   });
+
+  expect(`${changePerson}`).toEqual('test')
 });
 
 it('can create action of four arguments', () => {
@@ -85,6 +97,8 @@ it('can create action of four arguments', () => {
     email: 'jane@mail.com',
     password: '1234',
   });
+
+  expect(`${changePerson}`).toEqual('test')
 });
 
 it('can merge an action payload (without it\'s type) with any object', () => {
