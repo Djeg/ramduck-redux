@@ -7,6 +7,7 @@ import {
   contains,
   defaultTo,
   flip,
+  reduce as freduce,
   identity,
   ifElse,
   is,
@@ -14,7 +15,7 @@ import {
   pipe,
   prop,
   propEq,
-  reduce as freduce,
+  reduce,
   uncurryN,
 } from 'ramda'
 
@@ -69,13 +70,40 @@ export const when = uncurryN(2, cond([
 ]))
 
 /**
- * combine :: ...(a -> Action(*, *) -> b) -> a -> Action(*, *) -> c
+ * combine :: [(a -> Action(*, *) -> b)] -> a -> Action(*, *) -> c
  *
  * Create a reducer by composing reducer functions
  */
-export const combine = (...reducers) =>
+export const combineReducers = reducers =>
   uncurryN(2, state => action => freduce(
     (s, r) => r(s, action),
     state,
     reducers
   ))
+
+
+/**
+ * namedReducer :: String -> [(a -> Action * -> b)] -> Action * * -> a -> a
+ *
+ * create a named reducer
+ */
+export const createReducer = uncurryN(2, name => reducers => {
+  const fn = combineReducers(reducers)
+  fn.toString = () => name
+
+  return fn;
+})
+
+
+/**
+ * createRootReducer :: [(a -> Action * -> b)] -> Action * * -> a -> a
+ */
+export const createRootReducer = uncurryN(3, reducers => state => action => reduce(
+    (state, reducer) => ({
+        ...state,
+        [`${reducer}`]: reducer(state[`${reducer}`], action)
+    }),
+    state || {},
+    reducers,
+  )
+)

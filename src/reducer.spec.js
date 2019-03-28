@@ -1,5 +1,5 @@
+import { combine, combineReducers, init, when } from './reducer'
 import { evolve, always, pipe, uncurryN } from 'ramda'
-import { init, when, combine } from './reducer'
 
 it('can create reducer with an initial state', () => {
   const app = init({ name: 'John Doe' });
@@ -31,10 +31,10 @@ it('can create reducers on top of action reduce', () => {
 
   const initialState = { name: 'Jane' }
 
-  const app = combine(
+  const app = combineReducers([
     init(initialState),
     reduceChangeName,
-  );
+  ]);
 
   const state1 = app(initialState, { type: 'changeName', name: 'John' });
   const state2 = app(state1, { type: 'changeName', name: 'Eric' });
